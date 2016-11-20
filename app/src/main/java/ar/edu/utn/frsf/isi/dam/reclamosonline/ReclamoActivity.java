@@ -1,4 +1,4 @@
-package ar.edu.utn.frsf.isi.dam;
+package ar.edu.utn.frsf.isi.dam.reclamosonline;
 
         import android.app.Activity;
         import android.app.Dialog;
@@ -30,6 +30,7 @@ package ar.edu.utn.frsf.isi.dam;
         import java.util.ArrayList;
         import java.util.List;
 
+        import ar.edu.utn.frsf.isi.dam.R;
         import ar.edu.utn.frsf.isi.dam.reclamosonline.model.Reclamo;
 
 public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCallback{

@@ -18,7 +18,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="ar.edu.utn.frsf.isi.dam.ReclamoActivity"
+        tools:context="ar.edu.utn.frsf.isi.dam.reclamosonline.ReclamoActivity"
         android:layout_margin="0dp" />
 
 </RelativeLayout>
