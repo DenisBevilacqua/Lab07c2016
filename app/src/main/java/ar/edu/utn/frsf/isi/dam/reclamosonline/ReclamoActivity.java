@@ -107,9 +107,13 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
         LatLng point = new LatLng(rec.getLatitud(),rec.getLongitud());
 
+        // Agregamos el reclamo a la lista de reclamos
+
+        reclamos.add(rec);
+
         // Agregamos el marcador.
 
-        myMap.addMarker(new MarkerOptions().position(point).title("Descripcion:" + rec.getTitulo()).snippet(point.toString()));
+        myMap.addMarker(new MarkerOptions().position(point).title("Descripcion: " + rec.getTitulo()).snippet(point.toString()));
 
     }
 
