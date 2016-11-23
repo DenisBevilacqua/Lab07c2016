@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ar.edu.utn.frsf.isi.dam.AltaReclamoActivity;
 import ar.edu.utn.frsf.isi.dam.R;
 import ar.edu.utn.frsf.isi.dam.reclamosonline.model.Reclamo;
 
@@ -97,13 +98,25 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // COMPLETAR
+
+        // Luego de completar un alta reclamo activity
+
+        Bundle extras = data.getExtras();
+
+        Reclamo rec = (Reclamo) extras.get("result");
+
+        LatLng point = new LatLng(rec.getLatitud(),rec.getLongitud());
+
+        // Agregamos el marcador.
+
+        myMap.addMarker(new MarkerOptions().position(point).title("Descripcion:" + rec.getTitulo()).snippet(point.toString()));
 
     }
 
     private void mostrarDialogo() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         LayoutInflater inflater = this.getLayoutInflater();
 
         //builder.setView(R.layout.alert_distancia_busqueda);
@@ -180,7 +193,13 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapLongClick(LatLng point) {
         //tvLocInfo.setText("New marker added@" + point.toString());
-        myMap.addMarker(new MarkerOptions().position(point).title(point.toString()));
+
+        Intent i = new Intent(ReclamoActivity.this,
+                AltaReclamoActivity.class);
+        i.putExtra("coordenadas",point);
+        startActivityForResult(i, CODIGO_RESULTADO_ALTA_RECLAMO);
+
+        //myMap.addMarker(new MarkerOptions().position(point).title(point.toString()));
     }
 
 }

@@ -35,10 +35,26 @@ public class AltaReclamoActivity extends AppCompatActivity {
         txtDescripcion = (EditText) findViewById(R.id.reclamoTexto);
         txtTelefono= (EditText) findViewById(R.id.reclamoTelefono);
         txtMail= (EditText) findViewById(R.id.reclamoMail);
+
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // COMPLETAR
+                Bundle extras = getIntent().getExtras();
+                LatLng ubicación = (LatLng) extras.get("coordenadas");
+
+                Reclamo rec = new Reclamo();
+
+                //setear en reclos valores (latitud, longitud, texto, tel, mail
+                rec.setLatitud(ubicación.latitude);
+                rec.setLongitud(ubicación.longitude);
+                rec.setEmail(txtMail.getText().toString());
+                rec.setTelefono(txtTelefono.getText().toString());
+                rec.setTitulo(txtDescripcion.getText().toString());
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result",rec);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
             }
         });
         btnCancelar.setOnClickListener(new View.OnClickListener() {

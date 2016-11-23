@@ -9,6 +9,8 @@ import java.io.Serializable;
  */
 
 public class Reclamo implements Serializable {
+
+
     private Double latitud;
     private Double longitud;
     private String titulo;
@@ -27,6 +29,23 @@ public class Reclamo implements Serializable {
         this.telefono = telefono;
         this.email = email;
     }
+
+    public Double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        this.longitud = longitud;
+    }
+
+    public Double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        this.latitud = latitud;
+    }
+
 
     public LatLng coordenadaUbicacion() {
         return new LatLng(this.latitud, this.longitud);
