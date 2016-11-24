@@ -50,6 +50,13 @@
         android:inputType="textEmailAddress"
         android:ems="10"
         android:id="@+id/reclamoMail" />
+
+    <Button
+        android:text="Agregar imágen"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/img" />
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

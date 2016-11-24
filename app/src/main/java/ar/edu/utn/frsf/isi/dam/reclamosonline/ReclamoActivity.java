@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +49,9 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
     private static final Integer CODIGO_RESULTADO_ALTA_RECLAMO = 999;
 
     private List<Reclamo> reclamos;
-    WeakHashMap<Marker, Object> haspMap = new WeakHashMap <Marker, Object>();
+    List<Polyline> polylines = new ArrayList<Polyline>();
+
+    WeakHashMap<Marker, Object> haspMap = new WeakHashMap<Marker, Object>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,6 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
         mapFragment.getMapAsync(this);
 
         reclamos = new ArrayList<Reclamo>();
-
 
 
         //reclamos = new ArrayList<>();
@@ -97,6 +101,15 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
+                        for(Polyline line : polylines)
+                        {
+                            line.remove();
+                        }
+
+                        polylines.clear();
+
+                        //myMap.clear();
+
                         // Debemos buscar los reclamos cercanos y si es menor a la distancia indicada por el usuario
                         // Crear una polilinea
 
@@ -104,12 +117,50 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
                         Location locationA = new Location("point A");
 
-                       // Reclamo rec = (Reclamo) haspMap.get(marker);
+                        // Reclamo rec = (Reclamo) haspMap.get(marker);
 
                         Reclamo rec = (Reclamo) marker.getTag();
 
                         locationA.setLatitude(rec.getLatitud());
                         locationA.setLongitude(rec.getLongitud());
+
+                        Log.d("Antes del foreach",rec.getTitulo());
+
+                        for (Reclamo recActual : reclamos) {
+
+                            Log.d("Reclamo",recActual.getTitulo());
+
+                            if (!recActual.equals(rec)) {
+
+                                Log.d("Reclamo paso if ",recActual.getTitulo());
+
+                                Location locationB = new Location(recActual.getTitulo());
+
+                                locationB.setLatitude(recActual.getLatitud());
+                                locationB.setLongitude(recActual.getLongitud());
+
+                                float distance = locationA.distanceTo(locationB);
+
+                                Log.d("Distancia ",distance+"");
+
+                                if(distance <= Float.parseFloat(km)*1000.0){
+
+                                    Log.d("Entro al if de la poly",distance+"");
+
+                                    // Dibujar polilineas.
+
+                                    Polyline line = myMap.addPolyline(new PolylineOptions()
+                                            .add(new LatLng(locationA.getLatitude(),locationA.getLongitude()), new LatLng(locationB.getLatitude(),locationB.getLongitude()))
+                                            .width(5)
+                                            .color(Color.RED));
+
+                                    polylines.add(line);
+
+                                }
+
+                            }
+
+                        }
 
                         Location locationB = new Location("point B");
 
@@ -117,8 +168,6 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
                         locationB.setLongitude(lngB);
 
                         float distance = locationA.distanceTo(locationB);*/
-
-
 
 
                     }
@@ -175,7 +224,7 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
         Reclamo rec = (Reclamo) extras.get("result");
 
-        LatLng point = new LatLng(rec.getLatitud(),rec.getLongitud());
+        LatLng point = new LatLng(rec.getLatitud(), rec.getLongitud());
 
         // Agregamos el reclamo a la lista de reclamos
 
@@ -275,7 +324,7 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
         Intent i = new Intent(ReclamoActivity.this,
                 AltaReclamoActivity.class);
-        i.putExtra("coordenadas",point);
+        i.putExtra("coordenadas", point);
         startActivityForResult(i, CODIGO_RESULTADO_ALTA_RECLAMO);
 
         //myMap.addMarker(new MarkerOptions().position(point).title(point.toString()));
