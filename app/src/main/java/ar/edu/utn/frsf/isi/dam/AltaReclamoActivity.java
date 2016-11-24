@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -36,6 +37,7 @@ public class AltaReclamoActivity extends AppCompatActivity {
     private EditText txtTelefono;
     private LatLng ubicacion;
     private Button img;
+    private ImageView captura_img;
     static final int REQUEST_TAKE_PHOTO = 1;
     String mCurrentPhotoPath;
     static Uri capturedImageUri = null;
@@ -53,6 +55,7 @@ public class AltaReclamoActivity extends AppCompatActivity {
         txtDescripcion = (EditText) findViewById(R.id.reclamoTexto);
         txtTelefono= (EditText) findViewById(R.id.reclamoTelefono);
         txtMail= (EditText) findViewById(R.id.reclamoMail);
+        captura_img = (ImageView) findViewById(R.id.captura_img);
 
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +169,13 @@ public class AltaReclamoActivity extends AppCompatActivity {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             //Bitmap photo = (Bitmap) data.getExtras().get("data");
             //imageView.setImageBitmap(photo);
-            //Bitmap bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), capturedImageUri);
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), capturedImageUri);
+                captura_img.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             rec.setImagenPath(capturedImageUri.toString());
             Log.d("Path image ",capturedImageUri.toString());
 
