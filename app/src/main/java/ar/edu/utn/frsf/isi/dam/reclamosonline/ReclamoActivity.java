@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import ar.edu.utn.frsf.isi.dam.AltaReclamoActivity;
 import ar.edu.utn.frsf.isi.dam.R;
@@ -43,6 +46,7 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
     private static final Integer CODIGO_RESULTADO_ALTA_RECLAMO = 999;
 
     private List<Reclamo> reclamos;
+    WeakHashMap<Marker, Object> haspMap = new WeakHashMap <Marker, Object>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        reclamos = new ArrayList<Reclamo>();
 
 
 
@@ -63,6 +69,70 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
         myMap = googleMap;
         myMap.setOnMapLongClickListener(this);
         iniciarMapa();
+
+        myMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+
+            @Override
+            public void onInfoWindowClick(final Marker marker) {
+
+                Log.d("", marker.getTitle());
+
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ReclamoActivity.this);
+                builder.setTitle("Buscar reclamos");
+
+                final EditText input = new EditText(ReclamoActivity.this);
+
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                input.setHint("Cantidad de km");
+
+                /*final TextView textview = new TextView(ProyectosActivity.this);
+                textview.setText("Ingrese descripción");
+                builder.setCustomTitle(textview);*/
+
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        // Debemos buscar los reclamos cercanos y si es menor a la distancia indicada por el usuario
+                        // Crear una polilinea
+
+                        String km = input.getText().toString();
+
+                        Location locationA = new Location("point A");
+
+                       // Reclamo rec = (Reclamo) haspMap.get(marker);
+
+                        Reclamo rec = (Reclamo) marker.getTag();
+
+                        locationA.setLatitude(rec.getLatitud());
+                        locationA.setLongitude(rec.getLongitud());
+
+                        Location locationB = new Location("point B");
+
+                        /*locationB.setLatitude(latB);
+                        locationB.setLongitude(lngB);
+
+                        float distance = locationA.distanceTo(locationB);*/
+
+
+
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
     }
 
     private void iniciarMapa() {
@@ -113,8 +183,13 @@ public class ReclamoActivity extends AppCompatActivity implements OnMapReadyCall
 
         // Agregamos el marcador.
 
-        myMap.addMarker(new MarkerOptions().position(point).title("Descripcion: " + rec.getTitulo()).snippet(point.toString()));
+        Marker m = myMap.addMarker(new MarkerOptions().position(point).title("Descripcion: " + rec.getTitulo()).snippet(point.toString()));
 
+        // Agregamos el objeto reclamo al marcador
+
+        m.setTag(rec);
+
+        //haspMap.put(m, rec);
     }
 
     private void mostrarDialogo() {
